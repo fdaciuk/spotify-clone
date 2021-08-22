@@ -1,4 +1,4 @@
-export const DarkTheme = {
+export const LightTheme = {
   title: 'light',
   colors: {
     primary: '#1DB954',
