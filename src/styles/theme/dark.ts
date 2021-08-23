@@ -9,7 +9,8 @@ export const DarkTheme = {
   },
   background: {
     primary: '#121212',
-    secondary: '#191414'
+    secondary: '#181818',
+    tertiary: '#646464'
   },
   font: {
     family: {
