@@ -18,6 +18,60 @@ import {
 export const Audio = () => {
   const [ play, setPlay ] = React.useState(false)
 
+  let dragging = false
+  type ProgressType = {
+    target: HTMLElement | null;
+    bounds: DOMRect | null;
+  }
+
+  const progress: ProgressType = {
+    target: null,
+    bounds: null
+  }
+
+  const handleProgress = (event: MouseEvent) => {
+    if (dragging) {
+      let width = event.pageX - progress.bounds!.left
+      const maxWidth = progress.bounds!.width
+
+      if (width > maxWidth) {
+        width = maxWidth
+      }
+
+      if (width < 0) {
+        width = 0
+      }
+
+      progress.target?.classList.add('active')
+      progress.target?.setAttribute(
+        'style', 
+        `--width: ${width}px`
+      )
+    }
+  }
+
+  const handleProgressBarOnDown = (event: MouseEvent<MouseEvent>) => {
+    dragging = true
+    progress.target = event.currentTarget as HTMLElement
+    progress.bounds = progress.target?.getBoundingClientRect()
+
+    handleProgress(event)
+  }
+
+  React.useEffect(() => {
+    window.addEventListener(
+      'mouseup',
+      (event: MouseEvent) => {
+        dragging = false
+        progress.target?.classList.remove('active')
+    })
+    
+    window.addEventListener(
+      'mousemove',
+      (event: MouseEvent) => handleProgress(event)
+    )
+  }, [])
+
   return (
     <Box>
       <Controls>
@@ -34,8 +88,8 @@ export const Audio = () => {
               <svg width="20" height="20" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M5 23.6518C5 24.3964 4.39638 25 3.65177 25L3.43914 25C2.69453 25 2.09091 24.3964 2.09091 23.6518L2.09091 6.34823C2.09091 5.60362 2.69454 5 3.43914 5L3.65177 5C4.39638 5 5 5.60362 5 6.34823L5 23.6518Z" fill="currentColor"/>
                 <path d="M5 23.6518C5 24.3964 4.39638 25 3.65177 25L3.43914 25C2.69453 25 2.09091 24.3964 2.09091 23.6518L2.09091 6.34823C2.09091 5.60362 2.69454 5 3.43914 5L3.65177 5C4.39638 5 5 5.60362 5 6.34823L5 23.6518Z" fill="currentColor"/>
-                <path d="M5.25 16.299C4.25 15.7217 4.25 14.2783 5.25 13.701L18.75 5.90673C19.75 5.32938 21 6.05107 21 7.20577L21 22.7942C21 23.9489 19.75 24.6706 18.75 24.0933L5.25 16.299Z" stroke="currentColor" stroke-width="3"/>
-                <path d="M5.25 16.299C4.25 15.7217 4.25 14.2783 5.25 13.701L18.75 5.90673C19.75 5.32938 21 6.05107 21 7.20577L21 22.7942C21 23.9489 19.75 24.6706 18.75 24.0933L5.25 16.299Z" stroke="currentColor" stroke-width="3"/>
+                <path d="M5.25 16.299C4.25 15.7217 4.25 14.2783 5.25 13.701L18.75 5.90673C19.75 5.32938 21 6.05107 21 7.20577L21 22.7942C21 23.9489 19.75 24.6706 18.75 24.0933L5.25 16.299Z" stroke="currentColor" strokeWidth="3"/>
+                <path d="M5.25 16.299C4.25 15.7217 4.25 14.2783 5.25 13.701L18.75 5.90673C19.75 5.32938 21 6.05107 21 7.20577L21 22.7942C21 23.9489 19.75 24.6706 18.75 24.0933L5.25 16.299Z" stroke="currentColor" strokeWidth="3"/>
               </svg>
             </ControlsButton>
           </ControlsButtonsLeft>
@@ -51,14 +105,14 @@ export const Audio = () => {
               <svg width="20" height="20" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M25 6.34823C25 5.60362 25.6036 5 26.3482 5H26.5609C27.3055 5 27.9091 5.60362 27.9091 6.34823V23.6518C27.9091 24.3964 27.3055 25 26.5609 25H26.3482C25.6036 25 25 24.3964 25 23.6518V6.34823Z" fill="currentColor"/>
                 <path d="M25 6.34823C25 5.60362 25.6036 5 26.3482 5H26.5609C27.3055 5 27.9091 5.60362 27.9091 6.34823V23.6518C27.9091 24.3964 27.3055 25 26.5609 25H26.3482C25.6036 25 25 24.3964 25 23.6518V6.34823Z" fill="currentColor"/>
-                <path d="M24.75 13.701C25.75 14.2783 25.75 15.7217 24.75 16.299L11.25 24.0933C10.25 24.6706 9 23.9489 9 22.7942L9 7.20577C9 6.05107 10.25 5.32938 11.25 5.90673L24.75 13.701Z" stroke="currentColor" stroke-width="3"/>
-                <path d="M24.75 13.701C25.75 14.2783 25.75 15.7217 24.75 16.299L11.25 24.0933C10.25 24.6706 9 23.9489 9 22.7942L9 7.20577C9 6.05107 10.25 5.32938 11.25 5.90673L24.75 13.701Z" stroke="currentColor" stroke-width="3"/>
+                <path d="M24.75 13.701C25.75 14.2783 25.75 15.7217 24.75 16.299L11.25 24.0933C10.25 24.6706 9 23.9489 9 22.7942L9 7.20577C9 6.05107 10.25 5.32938 11.25 5.90673L24.75 13.701Z" stroke="currentColor" strokeWidth="3"/>
+                <path d="M24.75 13.701C25.75 14.2783 25.75 15.7217 24.75 16.299L11.25 24.0933C10.25 24.6706 9 23.9489 9 22.7942L9 7.20577C9 6.05107 10.25 5.32938 11.25 5.90673L24.75 13.701Z" stroke="currentColor" strokeWidth="3"/>
               </svg>
             </ControlsButton>
             <ControlsButton type="button">
               <svg width="20" height="16" viewBox="0 0 27 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1 12.0149C1 7.04886 5.02574 3.02313 9.99174 3.02313H17.1851M25.7273 9.99172C25.7273 14.9577 21.7015 18.9835 16.7355 18.9835H9.54215M19.0926 4.81487L21 2.90744L19.0926 1M7.4033 17.1851L5.49587 19.0926L7.4033 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M1 12.0149C1 7.04886 5.02574 3.02313 9.99174 3.02313H17.1851M25.7273 9.99172C25.7273 14.9577 21.7015 18.9835 16.7355 18.9835H9.54215M19.0926 4.81487L21 2.90744L19.0926 1M7.4033 17.1851L5.49587 19.0926L7.4033 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M1 12.0149C1 7.04886 5.02574 3.02313 9.99174 3.02313H17.1851M25.7273 9.99172C25.7273 14.9577 21.7015 18.9835 16.7355 18.9835H9.54215M19.0926 4.81487L21 2.90744L19.0926 1M7.4033 17.1851L5.49587 19.0926L7.4033 21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M1 12.0149C1 7.04886 5.02574 3.02313 9.99174 3.02313H17.1851M25.7273 9.99172C25.7273 14.9577 21.7015 18.9835 16.7355 18.9835H9.54215M19.0926 4.81487L21 2.90744L19.0926 1M7.4033 17.1851L5.49587 19.0926L7.4033 21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </ControlsButton>
           </ControlsButtonsRight>
@@ -66,8 +120,8 @@ export const Audio = () => {
         <ControlsPlayback>
           <ControlsPlaybackTime>0:40</ControlsPlaybackTime>
           <ControlsPlaybackProgress>
-            <ControlsProgress>
-              <ControlsProgressBar />
+            <ControlsProgress onMouseDown={(event) => handleProgressBarOnDown(event)}>
+              <ControlsProgressBar/>
             </ControlsProgress>
           </ControlsPlaybackProgress>
           <ControlsPlaybackTime>3:10</ControlsPlaybackTime>

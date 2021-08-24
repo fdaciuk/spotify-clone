@@ -73,15 +73,8 @@ export const ControlsPlaybackTime = styled.div`
   font-family: ${props => props.theme.font.family.sans};
 `
 
-export const ControlsProgress = styled.div`
-  width: 100%;
-  height: 5px;
-  border-radius: 999px;
-  background-color: ${props => props.theme.background.secondary};
-`
-
 export const ControlsProgressBar = styled.div`
-  width: 40%;
+  width: var(--width);
   height: 100%;
   border-radius: 99px;
   display: block;
@@ -94,10 +87,27 @@ export const ControlsProgressBar = styled.div`
     height: 13px;
     border-radius: 999px;
     position: absolute;
-    top: -4px; right: -4px;
+    top: -4px; right: -6px;
     background-color: ${props => props.theme.colors.text.primary};
     visibility: hidden;
     opacity: 0;
+  }
+`
+
+export const ControlsProgress = styled.div`
+  --width: 0px;
+  width: 100%;
+  height: 5px;
+  border-radius: 999px;
+  background-color: ${props => props.theme.background.secondary};
+
+  &.active ${ControlsProgressBar} {
+    background-color: ${props => props.theme.colors.primary};
+
+    &:after {
+      visibility: visible;
+      opacity: 1;
+    }
   }
 `
 

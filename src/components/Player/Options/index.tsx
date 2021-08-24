@@ -1,3 +1,5 @@
+import React from 'react'
+
 /* ------| Estilos |------ */
 import {
   Box,
@@ -9,6 +11,61 @@ import {
 } from "./styles"
 
 export const Options = () => {
+  
+  let dragging = false
+  type ProgressType = {
+    target: HTMLElement | null;
+    bounds: DOMRect | null;
+  }
+
+  const progress: ProgressType = {
+    target: null,
+    bounds: null
+  }
+
+  const handleProgress = (event: MouseEvent) => {
+    if (dragging) {
+      let width = event.pageX - progress.bounds!.left
+      const maxWidth = progress.bounds!.width
+
+      if (width > maxWidth) {
+        width = maxWidth
+      }
+
+      if (width < 0) {
+        width = 0
+      }
+
+      progress.target?.classList.add('active')
+      progress.target?.setAttribute(
+        'style', 
+        `--width: ${width}px`
+      )
+    }
+  }
+
+  const handleProgressBarOnDown = (event: MouseEvent) => {
+    dragging = true
+    progress.target = event.currentTarget as HTMLElement
+    progress.bounds = progress.target?.getBoundingClientRect()
+
+    handleProgress(event)
+  }
+
+  React.useEffect(() => {
+    window.addEventListener(
+      'mouseup',
+      (event: MouseEvent) => {
+        dragging = false
+        progress.target?.classList.remove('active')
+    })
+    
+    window.addEventListener(
+      'mousemove',
+      (event: MouseEvent) => handleProgress(event)
+    )
+  }, [])
+
   return (
     <Box>
       <OptionsButtons>
@@ -25,7 +82,7 @@ export const Options = () => {
               <path d="M18.4324 19.0823C18.9862 16.7654 19.2794 14.3473 19.2794 11.8607C19.2794 9.00262 18.892 6.235 18.1668 3.60752M1 5.71279H5.04267L11.8607 1C10.89 12.213 10.5877 9.18756 11.8607 21L5.04267 16.977H1V5.71279Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </OptionsButton>
-          <OptionsAudioProgress>
+          <OptionsAudioProgress onMouseDown={(event) => handleProgressBarOnDown(event)}>
             <OptionsAudioProgressBar />
           </OptionsAudioProgress>
         </OptionsAudio>

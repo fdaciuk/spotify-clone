@@ -30,16 +30,8 @@ export const OptionsButton = styled.button`
   }
 `
 
-export const OptionsAudioProgress = styled.div`
-  width: 112px;
-  height: 5px;
-  margin-top: -3px;
-  border-radius: 999px;
-  background-color: ${props => props.theme.background.secondary};
-`
-
 export const OptionsAudioProgressBar = styled.div`
-  width: 40%;
+  width: var(--width);
   height: 100%;
   border-radius: 99px;
   display: block;
@@ -56,6 +48,25 @@ export const OptionsAudioProgressBar = styled.div`
     background-color: ${props => props.theme.colors.text.primary};
     visibility: hidden;
     opacity: 0;
+  }
+`
+
+export const OptionsAudioProgress = styled.div`
+  --width: 0px;
+  width: 112px;
+  height: 5px;
+  margin-top: -3px;
+  margin-left: 4px;
+  border-radius: 999px;
+  background-color: ${props => props.theme.background.secondary};
+
+  &.active ${OptionsAudioProgressBar} {
+    background-color: ${props => props.theme.colors.primary};
+
+    &:after {
+      visibility: visible;
+      opacity: 1;
+    }
   }
 `
 
