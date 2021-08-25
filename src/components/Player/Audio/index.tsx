@@ -16,9 +16,9 @@ import {
 } from "./styles"
 
 export const Audio = () => {
-  const [ play, setPlay ] = React.useState(false)
+  const [ , setPlay ] = React.useState(false)
+  const dragging = React.useRef(false)
 
-  let dragging = false
   type ProgressType = {
     target: HTMLElement | null;
     bounds: DOMRect | null;
@@ -29,10 +29,10 @@ export const Audio = () => {
     bounds: null
   }
 
-  const handleProgress = (event: MouseEvent) => {
-    if (dragging) {
-      let width = event.pageX - progress.bounds!.left
-      const maxWidth = progress.bounds!.width
+  const handleProgress = (event: React.MouseEvent<HTMLDivElement, globalThis.MouseEvent> | MouseEvent) => {
+    if (dragging.current && progress.bounds) {
+      let width = event.pageX - progress.bounds.left
+      const maxWidth = progress.bounds.width
 
       if (width > maxWidth) {
         width = maxWidth
@@ -50,8 +50,8 @@ export const Audio = () => {
     }
   }
 
-  const handleProgressBarOnDown = (event: MouseEvent<MouseEvent>) => {
-    dragging = true
+  const handleProgressBarOnDown = (event: React.MouseEvent<HTMLDivElement, globalThis.MouseEvent>) => {
+    dragging.current = true
     progress.target = event.currentTarget as HTMLElement
     progress.bounds = progress.target?.getBoundingClientRect()
 
@@ -62,14 +62,11 @@ export const Audio = () => {
     window.addEventListener(
       'mouseup',
       (event: MouseEvent) => {
-        dragging = false
+        dragging.current = false
         progress.target?.classList.remove('active')
     })
     
-    window.addEventListener(
-      'mousemove',
-      (event: MouseEvent) => handleProgress(event)
-    )
+    window.addEventListener('mousemove', handleProgress)
   }, [])
 
   return (
@@ -120,7 +117,7 @@ export const Audio = () => {
         <ControlsPlayback>
           <ControlsPlaybackTime>0:40</ControlsPlaybackTime>
           <ControlsPlaybackProgress>
-            <ControlsProgress onMouseDown={(event) => handleProgressBarOnDown(event)}>
+            <ControlsProgress onMouseDown={handleProgressBarOnDown}>
               <ControlsProgressBar/>
             </ControlsProgress>
           </ControlsPlaybackProgress>
